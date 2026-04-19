@@ -1,0 +1,31 @@
+services:
+  api:
+    build: ./apa-backend
+    container_name: apa-asistente-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PORT: ${PORT:-3000}
+      MONGODB_URI: ${MONGODB_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+      APA_BASE_URL: ${APA_BASE_URL:-}
+      APA_USERNAME: ${APA_USERNAME:-}
+      APA_PASSWORD: ${APA_PASSWORD:-}
+    networks:
+      - mern_internal
+
+  web:
+    build:
+      context: ./apa-frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    container_name: apa-asistente-web
+    restart: unless-stopped
+    networks:
+      - mern_internal
+
+networks:
+  mern_internal:
+    external: true
